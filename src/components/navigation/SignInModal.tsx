@@ -1,4 +1,4 @@
-"use client"; // Menandai komponen ini sebagai komponen klien
+"use client";
 
 import React, { useState } from "react";
 import Link from "next/link";

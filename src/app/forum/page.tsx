@@ -6,7 +6,6 @@ import CategoryCard from '@/components/forum/CategorySideBar';
 import SearchBar from '@/components/navigation/SearchBar';
 import CategoryCardChannels from '@/components/forum/CategoryCardChannels';
 import CategoryCardAllThreads from '@/components/forum/CategoryCardAllThreads';
-// Import other category card components similarly
 
 const Forum = () => {
   const [category, setCategory] = useState('All threads');
@@ -43,12 +42,10 @@ const Forum = () => {
           <>
             <CategoryCardAllThreads />
             <CategoryCardChannels />
-            {/* Add other category components here */}
           </>
         );
       case 'Channels':
         return <CategoryCardChannels />;
-      // Add other cases similarly
       default:
         return <CategoryCardAllThreads />;
     }
