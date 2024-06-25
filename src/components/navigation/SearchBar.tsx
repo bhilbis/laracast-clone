@@ -1,5 +1,4 @@
-"use client"; // Menandai komponen ini sebagai komponen klien
-
+"use client"; 
 import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 
@@ -27,7 +26,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ toggleSearch }) => {
     <div className="fixed inset-0 bg-[#0A0F19] bg-opacity-90 backdrop-blur-sm flex items-center justify-center z-20">
       <div
         ref={modalRef}
-        className="relative bg-white py-2 px-3 rounded-lg shadow-lg w-[27rem] transform transition-transform duration-300 ease-in-out scale-0 opacity-0 animate-zoom-in"
+        className="relative bg-white py-2 px-3 rounded-lg shadow-lg w-[27rem] transform transition-transform duration-300 ease-in-out"
       >
         <div className="flex">
           <input
@@ -36,11 +35,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ toggleSearch }) => {
             className="w-full p-2 outline-none border-gray-300 rounded-lg"
           />
           <Image
-              src={"/assets/search1.svg"}
-              alt="search"
-              width={20}
-              height={20}
-            />
+            src={"/assets/search1.svg"}
+            alt="search"
+            width={20}
+            height={20}
+            className="ml-2"
+          />
         </div>
       </div>
     </div>

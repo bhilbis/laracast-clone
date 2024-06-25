@@ -1,9 +1,18 @@
 "use client";
+
 import React, { useState } from 'react';
 import Image from 'next/image';
+import CategoryCard from '@/components/forum/CategorySideBar';
+import SearchBar from '@/components/navigation/SearchBar';
+import CategoryCardChannels from '@/components/forum/CategoryCardChannels';
+import CategoryCardAllThreads from '@/components/forum/CategoryCardAllThreads';
+// Import other category card components similarly
 
 const Forum = () => {
   const [category, setCategory] = useState('All threads');
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [showSortText, setShowSortText] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const categories = [
     'All threads',
@@ -16,81 +25,129 @@ const Forum = () => {
     'Leaderboard'
   ];
 
+  const handleTagSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    if (value && !selectedTags.includes(value)) {
+      setSelectedTags([...selectedTags, value]);
+    }
+  };
+
+  const handleTagRemove = (tag: string) => {
+    setSelectedTags(selectedTags.filter(t => t !== tag));
+  };
+
+  const renderCategoryContent = () => {
+    switch (category) {
+      case 'All threads':
+        return (
+          <>
+            <CategoryCardAllThreads />
+            <CategoryCardChannels />
+            {/* Add other category components here */}
+          </>
+        );
+      case 'Channels':
+        return <CategoryCardChannels />;
+      // Add other cases similarly
+      default:
+        return <CategoryCardAllThreads />;
+    }
+  };
+
+  const toggleSearch = () => {
+    setSearchOpen(!searchOpen);
+  };
+
   return (
-      <div className="flex min-h-screen bg-[#0A0F19] text-white pt-16 mt-9">
+    <div className="flex min-h-screen bg-[#0A0F19] text-white pt-16 mt-9">
       {/* Left Sidebar */}
-      <div className="w-1/4 p-4 bg-[#0A0F19] sticky top-16 h-screen overflow-y-auto">
+      <div className="w-1/6 p-4 bg-[#0A0F19] sticky top-16 h-screen overflow-y-auto ml-4">
         <button className="w-full mb-4 py-4 px-8 bg-blue-500 rounded-2xl hover:bg-blue-700">
           New Discussion
         </button>
         <div>
-          {categories.map((category) => (
-            <div
-            key={category}
-            className={`py-2 px-4 cursor-pointer flex ${category === category ? 'bg-[#0A0F19]' : 'bg-gray-700 hover:bg-gray-600'}`}
-              onClick={() => setCategory(category)}
-            >
-            <div className="px-1 bg-[#1B55AC] rounded-t-lg rounded-b-lg mr-3"></div>
-              <span>{category}</span>
-            </div>
+          {categories.map((cat) => (
+            <CategoryCard
+              key={cat}
+              category={cat}
+              isActive={category === cat}
+              onClick={() => setCategory(cat)}
+            />
           ))}
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="w-1/2 p-4">
-        <div className="flex justify-between mb-4">
-          <div className="flex space-x-2">
-            <select title='category1' className="bg-[#0F1B2E] py-2 px-4 rounded">
-              <option>Option 1</option>
-              <option>Option 2</option>
+      <div className="w-4/6 p-8">
+      <div className="flex justify-between items-center mb-4">
+          <div className="flex space-x-2 text-[12px] text-[#BAD9FC]">
+            <select title='category1' className="bg-[#0F1B2E] py-2 px-3 rounded-3xl">
+              <option>Admin 1</option>
+              <option>Admin 2</option>
+              <option>Admin 3</option>
             </select>
-            <select title='category2' className="bg-[#0F1B2E] py-2 px-4 rounded">
-              <option>Option 3</option>
-              <option>Option 4</option>
+            <select title='category2' className="bg-[#0F1B2E] py-2 px-3 rounded-3xl" onChange={handleTagSelect}>
+              <option value="">All</option>
+              <option value="Latest">Latest</option>
+              <option value="Discussion Channels">Discussion Channels</option>
+              <option value="Popular This Week">Popular This Week</option>
+              <option value="Popular All Time">Popular All Time</option>
+              <option value="Solved">Solved</option>
+              <option value="Unsolved">Unsolved</option>
+              <option value="No Replies Yet">No Replies Yet</option>
             </select>
           </div>
-          <div className="flex space-x-2">
-            <select title='sort' className="bg-[#0F1B2E] py-2 px-4 rounded">
-              <option>Sort By</option>
-            </select>
-            <select title='filter' className="bg-[#0F1B2E] py-2 px-4 rounded">
-              <option>Filter By</option>
-            </select>
-            <button className="flex items-center bg-[#0F1B2E] py-2 px-4 rounded hover:bg-gray-700">
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
-              Begin Your Search...
+          <div className="flex items-center space-x-2 text-[12px] text-[#BAD9FC]">
+            <button title='show' type='button' className="flex items-center" onClick={() => setShowSortText(!showSortText)}>
+            <svg width={15} height={15} viewBox='0 0 15 15' className='mx-2'>
+              <g className='forum-excerpt-toggle-lines fill-current text-black/50 dark:text-gray-600'>
+                <rect className='forum-excerpt-toggle-line' width={15} height={6} rx={2}></rect>
+                <rect className='forum-excerpt-toggle-line' width={15} height={6} rx={2} y={9}></rect>
+              </g>
+            </svg>
+            </button>
+
+            <button title='hidden' disabled type='button' className="flex items-center" onClick={() => setShowSortText(!false)}>
+            <svg width={15} height={15} viewBox='0 0 15 15' className='mx-2'>
+              <g className='forum-excerpt-toggle-lines fill-current text-black/50 dark:text-gray-600'>
+                <rect className='forum-excerpt-toggle-line' width={15} height={4} rx={2}></rect>
+                <rect className='forum-excerpt-toggle-line' width={8} height={4} rx={2} y={11}></rect>
+                <rect className='forum-excerpt-toggle-line' width={15} height={4} rx={2} y={5.5}></rect>
+              </g>
+            </svg>
+            </button>
+
+            <button className="flex items-center bg-[#0F1B2E] py-2 px-3 rounded-3xl hover:bg-[#112340]" onClick={toggleSearch}>
+              <Image 
+                src={"/assets/search1.svg"}
+                alt='search'
+                width={24}
+                height={24}
+                className='w-5 h-5'
+              />
+              <span className="ml-2">Search...</span>
             </button>
           </div>
         </div>
-        <div className="space-y-4">
-          {[1, 2].map((item) => (
-            <div key={item} className="bg-[#0F1B2E] p-4 rounded">
-              <div className="flex space-x-4">
-                <Image 
-                    src="" 
-                    alt="thumbnail" 
-                    width={150}
-                    height={150}
-                    className="w-24 h-24 object-cover rounded" />
 
-                <div className="flex-1">
-                  <h2 className="text-xl font-bold">Discussion Title</h2>
-                  <p className="text-sm text-gray-400">Watching: 10 | Comments: 5</p>
-                  <button className="mt-2 py-1 px-3 bg-blue-500 rounded hover:bg-blue-700">Join Discussion</button>
-                  <p className="mt-2 text-gray-300">This is a brief description of the discussion...</p>
-                  <p className="mt-2 text-sm text-gray-400">Posted by User</p>
-                </div>
-              </div>
+        <div className="mb-4 flex flex-wrap">
+          {selectedTags.map(tag => (
+            <div key={tag} className="bg-blue-500 text-white px-4 py-1 rounded-full mr-2 mb-2 flex items-center">
+              <span>{tag}</span>
+              <button className="ml-2" onClick={() => handleTagRemove(tag)}>
+                &times;
+              </button>
             </div>
           ))}
+        </div>
+
+        <div className="space-y-4">
+          {renderCategoryContent()}
         </div>
       </div>
 
       {/* Right Sidebar */}
-      <div className="w-1/4 p-4 bg-[#0A0F19] sticky top-16 h-screen overflow-y-auto">
+      <div className="w-1/6 p-4 bg-[#0A0F19] sticky top-16 h-screen overflow-y-auto mr-4">
         <div className="bg-[#0F1B2E] p-4 mb-4 rounded">
           <h3 className="text-lg font-bold mb-2">Advertisement 1</h3>
           <p className="text-gray-400">This is an ad description.</p>
@@ -104,6 +161,8 @@ const Forum = () => {
           <p className="text-gray-400">This is an ad description.</p>
         </div>
       </div>
+
+      {searchOpen && <SearchBar toggleSearch={toggleSearch} />}
     </div>
   );
 };
